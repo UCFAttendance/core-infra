@@ -15,7 +15,7 @@ resource "aws_db_instance" "ucf_attendance_db" {
   storage_type                = "gp3"
   engine                      = "postgres"
   engine_version              = "16.3"
-  instance_class              = "db.t2g.micro"
+  instance_class              = "db.t4g.micro"
   username                    = "postgres"
   manage_master_user_password = true
   parameter_group_name        = "default.postgres16"
