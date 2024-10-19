@@ -6,9 +6,9 @@ on:
       - main
 
 env:
-  TF_CLOUD_ORGANIZATION: "YOUR-ORGANIZATION-HERE"
+  TF_CLOUD_ORGANIZATION: "attendance"
   TF_API_TOKEN: "${{ secrets.TF_API_TOKEN }}"
-  TF_WORKSPACE: "learn-terraform-github-actions"
+  TF_WORKSPACE: "core-infra"
   tf_actions_working_dir: "./terraform"
 
 jobs:
@@ -28,14 +28,6 @@ jobs:
         id: fmt
         run: terraform fmt -check
         continue-on-error: true
-
-      - name: Terraform Init
-        id: init
-        run: terraform init
-
-      - name: Terraform Validate
-        id: validate
-        run: terraform validate -no-color
 
       - name: Terraform Plan
         id: plan
