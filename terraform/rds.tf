@@ -10,7 +10,7 @@ resource "aws_security_group" "rds_sg" {
 }
 
 resource "aws_db_instance" "ucf_attendance_db" {
-  db_name                     = "ucf-attendance-db"
+  db_name                     = "ucf_attendance"
   allocated_storage           = 20
   storage_type                = "gp3"
   engine                      = "postgres"
