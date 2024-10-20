@@ -17,7 +17,7 @@ resource "aws_elasticache_cluster" "ucf_attendance_redis" {
   engine_version       = "7.1"
   node_type            = "cache.t3.micro"
   num_cache_nodes      = 1
-  parameter_group_name = "default.redis7.cluster.on"
+  parameter_group_name = "default.redis7"
   port                 = 6379
   subnet_group_name    = aws_elasticache_subnet_group.ucf_attendance_redis_subnet_group.name
   security_group_ids   = [aws_security_group.ucf_attendance_redis_sg.id]
