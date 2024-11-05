@@ -1,8 +1,8 @@
 resource "aws_ecs_task_definition" "task_definition" {
   family                   = "${var.app_prefix}-task"
-  requires_compatibilities = ["EC2"]
-  network_mode             = "bridge"
-  cpu                      = "256"
+  requires_compatibilities = ["FARGATE"]
+  network_mode             = "awsvpc" // required for Fargate
+  cpu                      = "256"    // Choose Fargate-compatible values
   memory                   = "512"
 
   container_definitions = jsonencode([
@@ -19,4 +19,3 @@ resource "aws_ecs_task_definition" "task_definition" {
     }
   ])
 }
-
