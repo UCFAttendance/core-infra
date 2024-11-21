@@ -1,4 +1,3 @@
-# SG for EC2
 resource "aws_security_group" "attendance_ec2_sg" {
   name        = "attendance_ec2_sg"
   description = "Allow HTTP and SSH inbound traffic"
@@ -37,7 +36,7 @@ resource "aws_instance" "attendance_ec2" {
   instance_type   = "t2.micro"
   key_name        = "ydhyVRfHOzEs"
   security_groups = [aws_security_group.attendance_ec2_sg.name]
-  subnet_id       = aws_subnet.private.id
+  subnet_id       = aws_subnet.private[0].id
 }
 
 resource "aws_lb_target_group" "ec2_attendance_target_group" {
