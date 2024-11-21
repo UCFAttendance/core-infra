@@ -17,14 +17,14 @@ locals {
 resource "aws_vpc" "attendance_vpc" {
   cidr_block = local.vpc_cidr_block
   tags = {
-    Name = "${var.app_prefix}-vpc"
+    Name = "attendance-vpc"
   }
 }
 
 resource "aws_internet_gateway" "attendance_internet_gateway" {
   vpc_id = aws_vpc.attendance_vpc.id
   tags = {
-    Name = "${var.app_prefix}-internet-gateway"
+    Name = "attendance-internet-gateway"
   }
 }
 
@@ -37,7 +37,7 @@ resource "aws_subnet" "public" {
   availability_zone       = element(keys(local.public_subnets), count.index)
 
   tags = {
-    Name = "${var.app_prefix}-public-subnet-${element(keys(local.public_subnets), count.index)}"
+    Name = "attendance-public-subnet-${element(keys(local.public_subnets), count.index)}"
   }
 }
 
@@ -50,7 +50,7 @@ resource "aws_subnet" "private" {
   availability_zone       = element(keys(local.private_subnets), count.index)
 
   tags = {
-    Name = "${var.app_prefix}-private-subnet-${element(keys(local.private_subnets), count.index)}"
+    Name = "attendance-private-subnet-${element(keys(local.private_subnets), count.index)}"
   }
 }
 
@@ -58,12 +58,11 @@ resource "aws_default_route_table" "public" {
   default_route_table_id = aws_vpc.attendance_vpc.main_route_table_id
 
   tags = {
-    Name = "${var.app_prefix}-public"
+    Name = "attendance-public"
   }
 }
 
 resource "aws_route" "public_internet_gateway" {
-  count                  = length(local.public_subnets)
   route_table_id         = aws_default_route_table.public.id
   destination_cidr_block = "0.0.0.0/0"
   gateway_id             = aws_internet_gateway.attendance_internet_gateway.id
@@ -83,7 +82,7 @@ resource "aws_route_table" "private" {
   vpc_id = aws_vpc.attendance_vpc.id
 
   tags = {
-    Name = "${var.app_prefix}-private"
+    Name = "attendance-private"
   }
 }
 
