@@ -41,13 +41,13 @@ resource "aws_instance" "attendance_ec2" {
 }
 
 resource "aws_lb_target_group" "ec2_attendance_target_group" {
-  name     = "attendance_target_group"
+  name     = "attendance-target-group"
   port     = 80
   protocol = "HTTP"
   vpc_id   = aws_vpc.attendance_vpc.id
 
   tags = {
-    Name = "attendance_target_group"
+    Name = "attendance-target-group"
   }
 }
 
