@@ -37,7 +37,7 @@ resource "aws_instance" "attendance_ec2" {
   instance_type   = "t2.micro"
   key_name        = "ydhyVRfHOzEs"
   security_groups = [aws_security_group.attendance_ec2_sg.name]
-  subnet_id       = aws_subnet.attendance_subnet.id
+  subnet_id       = aws_subnet.private.id
 }
 
 resource "aws_lb_target_group" "ec2_attendance_target_group" {
@@ -52,7 +52,7 @@ resource "aws_lb_target_group" "ec2_attendance_target_group" {
 }
 
 resource "aws_lb_target_group_attachment" "attendance_target_group_attachment" {
-  target_group_arn = aws_lb_target_group.attendance_target_group.arn
+  target_group_arn = aws_lb_target_group.ec2_attendance_target_group.arn
   target_id        = aws_instance.attendance_ec2.id
   port             = 80
 }
