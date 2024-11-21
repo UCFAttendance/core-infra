@@ -3,36 +3,52 @@ resource "aws_lb" "app_load_balancer" {
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.lb_sg.id]
-  subnets            = aws_subnet.public[*].id // references all public subnets
+  subnets            = aws_subnet.public[*].id
 
   tags = {
     Name = "attendance-alb"
   }
 }
 
-resource "aws_lb_target_group" "app_target_group" {
-  name     = "attendance-tg"
-  port     = 80
-  protocol = "HTTP"
-  vpc_id   = aws_vpc.attendance_vpc.id // set the VPC ID here using the reference
+resource "aws_lb_listener" "http_listener" {
+  load_balancer_arn = aws_lb.app_load_balancer.arn
+  port              = "80"
+  protocol          = "HTTP"
 
-  health_check {
-    path                = "/"
-    interval            = 30
-    timeout             = 5
-    healthy_threshold   = 2
-    unhealthy_threshold = 2
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.ec2_attendance_target_group.arn
+  }
+}
+
+resource "aws_lb_listener" "https_listener" {
+  load_balancer_arn = aws_lb.app_load_balancer.arn
+  port              = "443"
+  protocol          = "HTTPS"
+  ssl_policy        = "ELBSecurityPolicy-2016-08"
+  certificate_arn   = var.certificate_arn
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.ec2_attendance_target_group.arn
   }
 }
 
 resource "aws_security_group" "lb_sg" {
   name        = "attendance-lb-sg"
   description = "Allow HTTP traffic"
-  vpc_id      = aws_vpc.attendance_vpc.id // set the VPC ID here using the reference
+  vpc_id      = aws_vpc.attendance_vpc.id
 
   ingress {
     from_port   = 80
     to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 443
+    to_port     = 443
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
