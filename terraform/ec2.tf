@@ -9,7 +9,7 @@ resource "aws_security_group" "attendance_ec2_sg" {
     from_port       = 80
     to_port         = 80
     protocol        = "tcp"
-    security_groups = [aws_security_group.attendance_alb_sg.id]
+    security_groups = [aws_security_group.lb_sg.id]
   }
 
   ingress {
