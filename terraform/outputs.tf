@@ -11,5 +11,5 @@ output "private-subnet-ids" {
 }
 
 output "repository-arn" {
-  value = aws_ecr_repository.attendance.arn
+  value = aws_ecr_repository.attendance_backend.arn
 }
