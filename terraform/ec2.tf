@@ -32,11 +32,12 @@ resource "aws_security_group" "attendance_ec2_sg" {
 }
 
 resource "aws_instance" "attendance_ec2" {
-  ami                    = "ami-012967cc5a8c9f891"
-  instance_type          = "t2.micro"
-  key_name               = "ydhyVRfHOzEs"
-  vpc_security_group_ids = [aws_security_group.attendance_ec2_sg.id]
-  subnet_id              = aws_subnet.private[0].id
+  ami                         = "ami-012967cc5a8c9f891"
+  instance_type               = "t2.micro"
+  key_name                    = "ydhyVRfHOzEs"
+  associate_public_ip_address = false
+  vpc_security_group_ids      = [aws_security_group.attendance_ec2_sg.id]
+  subnet_id                   = aws_subnet.private[0].id
 }
 
 resource "aws_lb_target_group" "ec2_attendance_target_group" {
