@@ -22,6 +22,6 @@ output "ecs-cluster-name" {
   value = aws_ecs_cluster.ecs_cluster.name
 }
 
-output "repository-arn" {
-  value = aws_ecr_repository.attendance_backend.arn
+output "backend-repository-name" {
+  value = aws_ecr_repository.attendance_backend.name
 }
