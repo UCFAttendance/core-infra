@@ -25,3 +25,7 @@ output "ecs-cluster-name" {
 output "backend-repository-name" {
   value = aws_ecr_repository.attendance_backend.name
 }
+
+output "attendance-images-bucket" {
+  value = aws_s3_bucket.attendance_images.arn
+}
