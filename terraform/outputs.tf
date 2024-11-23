@@ -14,6 +14,10 @@ output "rds-indentifier" {
   value = aws_db_instance.ucf_attendance_db.identifier
 }
 
+output "redis-cluster-id" {
+  value = aws_elasticache_cluster.ucf_attendance_redis.cluster_id
+}
+
 output "alb-arn" {
   value = aws_lb.app_load_balancer.arn
 }
