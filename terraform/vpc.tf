@@ -1,21 +1,31 @@
 locals {
-  vpc_cidr_block = "10.0.0.0/16"
+  vpc_cidr_block = "192.168.0.0/20"
   public_subnets = {
-    "${var.aws_region}a" = "10.0.101.0/24"
-    "${var.aws_region}b" = "10.0.102.0/24"
+    "${var.aws_region}a" = {
+      ipv6 = cidrsubnet(aws_vpc.attendance_vpc.ipv6_cidr_block, 8, 1)
+      ipv4 = cidrsubnet(aws_vpc.attendance_vpc.cidr_block, 4, 1)
+    }
+    "${var.aws_region}b" = {
+      ipv6 = cidrsubnet(aws_vpc.attendance_vpc.ipv6_cidr_block, 8, 2)
+      ipv4 = cidrsubnet(aws_vpc.attendance_vpc.cidr_block, 4, 2)
+    }
   }
   private_subnets = {
-    "${var.aws_region}a" = "10.0.201.0/24"
-    "${var.aws_region}b" = "10.0.202.0/24"
-  }
-  db_subnet = {
-    "${var.aws_region}a" = "10.0.301.0/24"
-    "${var.aws_region}b" = "10.0.302.0/24"
+    "${var.aws_region}a" = {
+      ipv6 = cidrsubnet(aws_vpc.attendance_vpc.ipv6_cidr_block, 8, 3)
+      ipv4 = cidrsubnet(aws_vpc.attendance_vpc.cidr_block, 4, 3)
+    }
+    "${var.aws_region}b" = {
+      ipv6 = cidrsubnet(aws_vpc.attendance_vpc.ipv6_cidr_block, 8, 4)
+      ipv4 = cidrsubnet(aws_vpc.attendance_vpc.cidr_block, 4, 4)
+    }
   }
 }
 
 resource "aws_vpc" "attendance_vpc" {
-  cidr_block = local.vpc_cidr_block
+  cidr_block                       = local.vpc_cidr_block
+  assign_generated_ipv6_cidr_block = true
+
   tags = {
     Name = "attendance-vpc"
   }
@@ -29,9 +39,10 @@ resource "aws_internet_gateway" "attendance_internet_gateway" {
 }
 
 resource "aws_subnet" "public" {
-  count      = length(local.public_subnets)
-  cidr_block = element(values(local.public_subnets), count.index)
-  vpc_id     = aws_vpc.attendance_vpc.id
+  count           = length(local.public_subnets)
+  cidr_block      = element(values(local.public_subnets), count.index).ipv4
+  ipv6_cidr_block = element(values(local.public_subnets), count.index).ipv6
+  vpc_id          = aws_vpc.attendance_vpc.id
 
   map_public_ip_on_launch = true
   availability_zone       = element(keys(local.public_subnets), count.index)
@@ -42,9 +53,10 @@ resource "aws_subnet" "public" {
 }
 
 resource "aws_subnet" "private" {
-  count      = length(local.private_subnets)
-  cidr_block = element(values(local.private_subnets), count.index)
-  vpc_id     = aws_vpc.attendance_vpc.id
+  count           = length(local.private_subnets)
+  cidr_block      = element(values(local.private_subnets), count.index).ipv4
+  ipv6_cidr_block = element(values(local.private_subnets), count.index).ipv6
+  vpc_id          = aws_vpc.attendance_vpc.id
 
   map_public_ip_on_launch = true
   availability_zone       = element(keys(local.private_subnets), count.index)
