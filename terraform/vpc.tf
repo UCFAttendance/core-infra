@@ -34,7 +34,7 @@ resource "aws_vpc" "attendance_vpc" {
 resource "aws_internet_gateway" "attendance_internet_gateway" {
   vpc_id = aws_vpc.attendance_vpc.id
   tags = {
-    Name = "attendance-internet-gateway"
+    Name = "Internet Gateway IPv4"
   }
 }
 
@@ -48,7 +48,7 @@ resource "aws_subnet" "public" {
   availability_zone       = element(keys(local.public_subnets), count.index)
 
   tags = {
-    Name = "attendance-public-subnet-${element(keys(local.public_subnets), count.index)}"
+    Name = "Public Subnet ${element(keys(local.public_subnets), count.index)}"
   }
 }
 
@@ -62,7 +62,7 @@ resource "aws_subnet" "private" {
   availability_zone       = element(keys(local.private_subnets), count.index)
 
   tags = {
-    Name = "attendance-private-subnet-${element(keys(local.private_subnets), count.index)}"
+    Name = "Private Subnet ${element(keys(local.private_subnets), count.index)}"
   }
 }
 
@@ -70,14 +70,24 @@ resource "aws_default_route_table" "public" {
   default_route_table_id = aws_vpc.attendance_vpc.main_route_table_id
 
   tags = {
-    Name = "attendance-public"
+    Name = "Public Route Table"
   }
 }
 
-resource "aws_route" "public_internet_gateway" {
+resource "aws_route" "public_internet_gateway_ipv4" {
   route_table_id         = aws_default_route_table.public.id
   destination_cidr_block = "0.0.0.0/0"
   gateway_id             = aws_internet_gateway.attendance_internet_gateway.id
+
+  timeouts {
+    create = "5m"
+  }
+}
+
+resource "aws_route" "public_internet_gateway_ipv6" {
+  route_table_id              = aws_default_route_table.public.id
+  destination_ipv6_cidr_block = "::/0"
+  gateway_id                  = aws_internet_gateway.attendance_internet_gateway.id
 
   timeouts {
     create = "5m"
@@ -90,11 +100,19 @@ resource "aws_route_table_association" "public" {
   route_table_id = aws_default_route_table.public.id
 }
 
+resource "aws_egress_only_internet_gateway" "egress_internet_gateway_ipv6" {
+  vpc_id = aws_vpc.attendance_vpc.id
+
+  tags = {
+    "Name" = "Internet Gateway IPv6 Egress Only"
+  }
+}
+
 resource "aws_route_table" "private" {
   vpc_id = aws_vpc.attendance_vpc.id
 
   tags = {
-    Name = "attendance-private"
+    Name = "Private Route Table"
   }
 }
 
@@ -102,4 +120,14 @@ resource "aws_route_table_association" "private" {
   count          = length(local.private_subnets)
   subnet_id      = element(aws_subnet.private.*.id, count.index)
   route_table_id = aws_route_table.private.id
+}
+
+resource "aws_route" "private_egress_internet_gateway_ipv6" {
+  route_table_id              = aws_route_table.private.id
+  destination_ipv6_cidr_block = "::/0"
+  egress_only_gateway_id      = aws_egress_only_internet_gateway.egress_internet_gateway_ipv6.id
+
+  timeouts {
+    create = "5m"
+  }
 }
