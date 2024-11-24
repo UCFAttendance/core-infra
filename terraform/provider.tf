@@ -7,7 +7,6 @@ terraform {
 
     ionosdeveloper = {
       source  = "ionos-developer/ionosdeveloper"
-      version = ">= 0.1"
     }
   }
   required_version = ">= 1.1.0"
