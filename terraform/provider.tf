@@ -4,6 +4,11 @@ terraform {
       source  = "hashicorp/aws"
       version = ">= 5.0"
     }
+
+    ionosdeveloper = {
+      source  = "ionos-developer/ionosdeveloper"
+      version = ">= 0.1"
+    }
   }
   required_version = ">= 1.1.0"
 }
