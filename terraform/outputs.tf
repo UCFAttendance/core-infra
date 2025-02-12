@@ -33,3 +33,23 @@ output "backend-repository-name" {
 output "attendance-images-bucket" {
   value = aws_s3_bucket.attendance_images.arn
 }
+
+output "sqs-main-queue-url" {
+  description = "Main Queue URL"
+  value = aws_sqs_queue.attendance_queue.url
+}
+
+output "sqs-main-queue-arn" {
+  description = "Main Queue ARN"
+  value = aws_sqs_queue.attendance_queue.arn
+}
+
+output "sqs-DLQ-url" {
+  description = "Dead letter queue URL"
+  value = aws_sqs_queue.attendance_dlq.url
+}
+
+output "sqs-DQL-arn" {
+  description = "Dead letter queue ARN"
+  value = aws_sqs_queue.attendance_dlq.arn
+}
