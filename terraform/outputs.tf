@@ -40,6 +40,6 @@ output "sqs-main-queue-name" {
 }
 
 output "sqs-dlq-name" {
-  description = "Dead letter queue URL"
+  description = "Dead letter queue name"
   value       = aws_sqs_queue.attendance_dlq.name
 }
