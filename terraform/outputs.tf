@@ -34,7 +34,7 @@ output "attendance-images-bucket" {
   value = aws_s3_bucket.attendance_images.arn
 }
 
-output "sqs-main-queue-name" {
+output "sqs-name" {
   description = "Main queue name"
   value       = aws_sqs_queue.attendance_queue.name
 }
